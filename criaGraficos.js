@@ -15,14 +15,42 @@ function divChart(myModal){
     let data_ini = formatData($('#data_ini').val())
     let data_fin = formatData($('#data_fin').val())
     let dados=[];
+    let somaReceita = 0;
+    let somaCusto = 0;
+    let somaLucro = 0;
 
     if(data_fin == "" || data_ini == ""){      
         dados = buscaDados();
     }else{
       dados = buscaDados(data_ini,data_fin)
     }
+    if(dados.length > 0){
+      dados.map((e)=>{
+        somaReceita += e[4]
+        somaCusto += e[12]
+      })
+ 
+    }
     let dashboard = `           
-          <div style="overflow:hidden; max-width:90%; margin:0 auto;" class="mt-5">
+
+          <div class="container mt-3">
+            <div class="d-flex flex-row justify-content-around">
+
+              <div class="card p-3 " style="border-radius:15px">
+                <p class="text-center">RECEITA</p>
+                ${formatarNumeroBrasileiro(somaReceita)}
+              </div>
+              <div class="card p-3" style="border-radius:15px">
+                <p class="text-center">CUSTO</p>
+                ${formatarNumeroBrasileiro(somaCusto)}
+              </div>
+              <div class="card p-3" style="border-radius:15px">
+                <p class="text-center">LUCRO</p>
+                ${formatarNumeroBrasileiro(somaReceita-somaCusto)}
+              </div>
+            </div>
+          </div>
+          <div style="overflow:hidden; max-width:90%; margin:0 auto;" class="mt-2">
               <div class="row d-flex align-items-center mb-2">
                 <div class="col-12">
                   <div id="table">${criaTabela(dados)}</div>
@@ -31,7 +59,7 @@ function divChart(myModal){
             
               <div class="row col mt-4">
                 <div class="col-4">
-                  <div class="card" style="d-flex justify-content-end align-items:center;">
+                  <div class="card" style="d-flex justify-content-end align-items-center;">
                     <div class="card-body">
                       <div id="chartLine1"></div>
                     </div>
@@ -74,7 +102,6 @@ function divChart(myModal){
                 </div><!-- col-4 -->
               </div>
             </div>
-
     `;
 
 
@@ -91,6 +118,20 @@ function divChart(myModal){
     console.log("fechando")
     stopLoading(myModal)
 
+}
+
+function formatarNumeroBrasileiro(numero) {
+  numero = parseFloat(numero).toFixed(2);
+
+  var partes = numero.split(".");
+  var parteInteira = partes[0];
+  var parteDecimal = partes[1];
+
+  parteInteira = parteInteira.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+  var numeroFormatado = "R$ " + parteInteira + "," + parteDecimal;
+
+  return numeroFormatado;
 }
 
 function formatData(data){
@@ -442,3 +483,31 @@ function chartLine4(dados,height){
       chart.render();
 }
 
+function chartBarHorizontal(){
+  var options = {
+    series: [{
+    data: [400, 430, 448, 470, 540, 580, 690, 1100, 1200, 1380]
+  }],
+    chart: {
+    type: 'bar',
+    height: 350
+  },
+  plotOptions: {
+    bar: {
+      borderRadius: 4,
+      horizontal: true,
+    }
+  },
+  dataLabels: {
+    enabled: false
+  },
+  xaxis: {
+    categories: ['South Korea', 'Canada', 'United Kingdom', 'Netherlands', 'Italy', 'France', 'Japan',
+      'United States', 'China', 'Germany'
+    ],
+  }
+  };
+
+  var chart = new ApexCharts(document.querySelector("#chartBarVertical"), options);
+  chart.render();
+}

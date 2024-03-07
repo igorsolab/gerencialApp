@@ -46,40 +46,7 @@ function startApp(){
 function initHtml(){
 	let conteudo1 = $('#pesquisa');
 	conteudo1.empty();
-	// let html = ` <div class="row">
-	// 						<div class="col" id="barra">
-	// 						</div>
-	// 					</div>
-	// 					<div class="row mt-2">
-	// 					<div class="col-12">
-	// 						<div class="card m-2">
-	// 							<div class="card-body">
-	// 								<div id="filtro">
-	// 									<div class="row">
-	// 										<div class="col-2>
-	// 											<label class="form-label" for="dtini">Dt. Inicial</label>
-	// 											<input type="date" class="form-control form-control-sm" name="dtini" id="dtini" value="">
-	// 										</div>
-	// 										<div class="col-2>
-	// 											<label class="form-label" for="dtfim">Dt. Final</label>
-	// 											<input type="date" class="form-control form-control-sm" name="dtfim" id="dtfim" value="">
-	// 										</div>
-	// 										<div class="col-1>
-	// 										</div>
-	// 									</div>
-	// 								</div>
-	// 							</div>
-	// 						</div>
-	// 					</div>
-	// 						<div class="col-12">
-	// 							<div class="card m-2">
-	// 								<div class="card-body">
-	// 									<div id="dados">
-	// 									</div>
-	// 								</div>
-	// 							</div>
-	// 						</div>
-	// 					</div>`;
+
     let html = `
 	<style>
 	body{
@@ -110,36 +77,36 @@ function initHtml(){
 	  100% { transform: rotate(360deg); }
   }
   </style>
-	<nav class="navbar navbar-dark bg-dark">
-		<div class="container-fluid justify-content-start">
-			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+	<nav class="navbar navbar-dark bg-dark text-white">
+		<div class="container-fluid justify-content-between">
+			<span style="color:white;font-size:2.2em;margin-left:20px" class="navbar-brand">Dashboard Gerencial</span>
+			<button class="navbar-toggler"  type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon" style="color:white;"></span>
 			</button>
-			<span style="color:white;font-size:2.2em;margin-left:20px" class="navbar-brand">Dashboard Gerencial</span>
 		</div>
 	</nav>
 	<div class="collapse" id="navbarToggleExternalContent">
 		<div class="bg-dark text-light p-4">
 			<form>
 
-				<div class="row">
-					<div class="col">
-						<div class="col-2 d-flex justify-content-between">
-							<label class="form-label" for="data_ini">Data inicio:</label>
-							<input type="date" style="padding:6px; border-radius:7px; border:none;" id="data_ini"/>
+				<div class="col">
+					<div class="row">
+						<div class="col-3 d-flex justify-content-between">
+							<label class="form-label col-6" for="data_ini">Data inicio:</label>
+							<input class="form-control" type="date" id="data_ini"/>
 						</div>
 					</div>
 				</div>
-				<div class="row mt-2">
-					<div class="col">
-						<div class="col-2 d-flex justify-content-between">
-							<label class="form-label" for="data_ini">Data Final:</label>
-							<input type="date" style="padding:6px; border-radius:7px; border:none;" id="data_fin"/>
+				<div class="col">
+					<div class="row mt-2">
+						<div class="col-3 d-flex justify-content-between">
+							<label class="form-label col-6" for="data_ini" >Data Final:</label>
+							<input class="form-control" type="date" id="data_fin"/>
 						</div>
 					</div>
 				</div>
-				<div class="col-2 mt-2">
-					<button type="button" style="width:100%" onclick="actionGraficos();" class="btn btn-primary">Buscar</button>
+				<div class="col-3 mt-2">
+					<button type="button" style="width:265px" onclick="actionGraficos();" class="btn btn-primary ">Buscar</button>
 				</div>
 
 			</form>
@@ -205,48 +172,50 @@ function exibeN5(codprod){
 	titulo.empty();
 	titulo.append(produto[0][0]+' - '+produto[0][1]);
 
-	sql = `                             select 	e.CODEMP,
-											CONCAT(e.CODEMP, ' - ', e.NOMEFANTASIA)  as DESCRICAO,
-											SUM(i.QTDNEG) AS QTD,
-											SUM(i.VLRTOT) as PRECOFUTURO,
-											SUM(i.PRECOBASE * i.QTDNEG) as PRECOAVISTA,
-											SUM(i.VLRPROMO) as VLRPROMO,
-											SUM(i.VLRICMS) as VLRICMS,
-											SUM(
-											CASE
-												WHEN 	i.VLRUNIT = i.PRECOBASE THEN  0
-												ELSE 	i.VLRTOT  - (i.PRECOBASE * i.QTDNEG)
-											END) as VRLFINANCEIRO,
-											SUM(
-											CASE
-												WHEN 	i.VLRUNIT < i.PRECOBASE THEN i.VLRTOT
-												ELSE    i.PRECOBASE * i.QTDNEG
-											END) AS VLRPRODUTO,
-											SUM(
-											CASE
-												WHEN 	i.VLRUNIT < i.PRECOBASE THEN i.VLRTOT * ISNULL((fator.PISCOFINS + fator.COMISSAO + fator.ICMS + fator.IRCSLL + fator.MONTAGEM + fator.ENTREGA + fator.CUSTOFIXO + fator.OVERHEAD) / 100,0)
-												ELSE    (i.PRECOBASE * i.QTDNEG) * ISNULL((fator.PISCOFINS + fator.COMISSAO + fator.ICMS + fator.IRCSLL + fator.MONTAGEM + fator.ENTREGA + fator.CUSTOFIXO + fator.OVERHEAD) / 100,0)
-											END) AS VLRCUSTO_OP,
-											AVG(proj.LUCRO ) as LUCROPROJ,
-											SUM(i.CUSTO * i.QTDNEG) as CMV
-											from TGFCAB c
-											inner join TGFITE i on (i.NUNOTA 	= c.NUNOTA)
-											inner join TGFPRO p on (p.CODPROD 	= i.CODPROD)
-											inner join TGFVEN v on (v.CODVEND	= i.CODVEND)
-											inner join TSIEMP e on (e.CODEMP	= c.CODEMP)
-											inner join TGFGRU g1 on (g1.CODGRUPOPROD = p.CODGRUPOPROD)
-											inner join TGFGRU g2 on (g2.CODGRUPOPROD = g1.CODGRUPAI)
-											inner join TGFGRU g3 on (g3.CODGRUPOPROD = g2.CODGRUPAI)
-											left  join TGFDIN pis on (pis.NUNOTA = i.NUNOTA and pis.SEQUENCIA = i.SEQUENCIA and pis.CODIMP = 6)
-											left  join TGFDIN cofins on (cofins.NUNOTA = i.NUNOTA and cofins.SEQUENCIA = i.SEQUENCIA and cofins.CODIMP = 7)
-											left  join AD_MARKUPREALIZADO fator on ( fator.CODGRUPOPROD  = g3.CODGRUPOPROD  AND  fator.MES = MONTH(DATEADD(MONTH, -1, c.DTNEG)) AND fator.ANO = YEAR(DATEADD(MONTH, -1, c.DTNEG)))
-											left  join AD_MARKUP proj on (proj.CODGRUPOPROD3 = g3.CODGRUPOPROD)
-											where c.CODTIPOPER 		= 1209
-											and   c.STATUSNOTA 		= 'L'
-											and   i.USOPROD 		= 'R'
-											and   i.CODPROD 		= ${codprod}
-											group by e.CODEMP, e.NOMEFANTASIA
-											order by 3 desc `;
+									sql =  `				select 	e.CODEMP,				
+									CONCAT(e.CODEMP, ' - ', e.NOMEFANTASIA)  as DESCRICAO,
+									SUM(i.QTDNEG) AS QTD,
+									SUM(i.VLRTOT) as PRECOFUTURO,
+									SUM(i.PRECOBASE * i.QTDNEG) as PRECOAVISTA,
+									SUM(i.VLRPROMO) as VLRPROMO,
+									SUM(i.VLRICMS) as VLRICMS,
+									SUM(
+									CASE
+										WHEN 	i.VLRUNIT = i.PRECOBASE THEN  0
+										ELSE 	i.VLRTOT  - (i.PRECOBASE * i.QTDNEG)
+									END) as VRLFINANCEIRO,
+									SUM(
+									CASE
+										WHEN 	i.VLRUNIT < i.PRECOBASE THEN i.VLRTOT
+										ELSE    i.PRECOBASE * i.QTDNEG
+									END) AS VLRPRODUTO,
+									SUM(
+									CASE
+										WHEN 	i.VLRUNIT < i.PRECOBASE THEN i.VLRTOT * ISNULL((fator.PISCOFINS + fator.COMISSAO + fator.ICMS + fator.IRCSLL + fator.MONTAGEM + fator.ENTREGA + fator.CUSTOFIXO + fator.OVERHEAD) / 100,0)
+										ELSE    (i.PRECOBASE * i.QTDNEG) * ISNULL((fator.PISCOFINS + fator.COMISSAO + fator.ICMS + fator.IRCSLL + fator.MONTAGEM + fator.ENTREGA + fator.CUSTOFIXO + fator.OVERHEAD) / 100,0)
+									END) AS VLRCUSTO_OP,
+									AVG(proj.LUCRO ) as LUCROPROJ,
+									SUM(i.CUSTO * i.QTDNEG) as CMV,
+									0 as ORDEM
+									from TGFCAB c
+									inner join TGFITE i on (i.NUNOTA 	= c.NUNOTA)
+									inner join TGFPRO p on (p.CODPROD 	= i.CODPROD)
+									inner join TGFVEN v on (v.CODVEND	= i.CODVEND)
+									inner join TSIEMP e on (e.CODEMP	= c.CODEMP)
+									inner join TGFGRU g1 on (g1.CODGRUPOPROD = p.CODGRUPOPROD)
+									inner join TGFGRU g2 on (g2.CODGRUPOPROD = g1.CODGRUPAI)
+									inner join TGFGRU g3 on (g3.CODGRUPOPROD = g2.CODGRUPAI)
+									left  join TGFDIN pis on (pis.NUNOTA = i.NUNOTA and pis.SEQUENCIA = i.SEQUENCIA and pis.CODIMP = 6)
+									left  join TGFDIN cofins on (cofins.NUNOTA = i.NUNOTA and cofins.SEQUENCIA = i.SEQUENCIA and cofins.CODIMP = 7)
+									left  join AD_MARKUPREALIZADO fator on ( fator.CODGRUPOPROD  = g3.CODGRUPOPROD  AND  fator.MES = MONTH(DATEADD(MONTH, -1, c.DTNEG)) AND fator.ANO = YEAR(DATEADD(MONTH, -1, c.DTNEG)))
+									left  join AD_MARKUP proj on (proj.CODGRUPOPROD3 = g3.CODGRUPOPROD)
+									where c.CODTIPOPER 		= 1209
+									and   c.STATUSNOTA 		= 'L'
+									and   i.USOPROD 		= 'R'
+									and   i.CODPROD 		= ${codprod}
+									group by e.CODEMP, e.NOMEFANTASIA`;
+
+
 	let dadosTb         = getDadosSql(sql);
 	let tela            = $('#dataN5Modal');
 	tela.empty();
@@ -255,6 +224,7 @@ function exibeN5(codprod){
 	let corNegativo     = '';
 	let corLucro        = '';
 	let corDesvio       = '';
+	let linha  			= 0;
 	let format          = { minimumFractionDigits: 2 , style: 'currency', useGrouping: 'true', currency: 'BRL' };
 	let pformat         = { minimumFractionDigits: 2 , style: 'percent', useGrouping: 'true', currency: 'BRL' };
 
@@ -276,7 +246,6 @@ function exibeN5(codprod){
 		let desvio    = lucro - plucro;
 
 
-		let name  = dadosTb[i][0];
 
 		descricao = dadosTb[i][1];
 
@@ -298,19 +267,20 @@ function exibeN5(codprod){
 			corDesvio = 'color : green;';
 		}
 
-		tabela +=  `<tr grau="${dadosTb[i][1]}" name="${name}" style=" ${cor} font-weight: bold;">
-								<td>${descricao}</td>
-									<td style="text-align: right; ">${dadosTb[i][2]} </td>
-									<td style="text-align: right; ">${pvf.toLocaleString("pt-BR", format)}</td>
-									<td style="text-align: right; ">${pva.toLocaleString("pt-BR", format)}</td>
-									<td style="text-align: right; ${corNegativo} ">${vlrf.toLocaleString("pt-BR", format)}</td>
-									<td style="text-align: right; ">${cmv.toLocaleString("pt-BR", format)}</td>
-									<td style="text-align: right; ">${cop.toLocaleString("pt-BR", format)}</td>
-									<td style="text-align: right; ${corLucro} ">${lucro.toLocaleString("pt-BR", pformat)}</td>
-									<td style="text-align: right; ">${plucro.toLocaleString("pt-BR", pformat)}</td>
-									<td style="text-align: right; ${corDesvio} ">${desvio.toLocaleString("pt-BR", pformat)}</td>
-								</tr>
-								`;
+		tabela +=  `<tr onclick="exibePromoOpen('${linha}')" id="P${linha}" style=" ${cor} font-weight: bold;">
+						<td>${descricao}</td>
+						<td style="text-align: right;">${dadosTb[i][2]} </td>
+						<td style="text-align: right;">${pvf.toLocaleString("pt-BR", format)}</td>
+						<td style="text-align: right;">${cmv.toLocaleString("pt-BR", format)}</td>
+						<td style="text-align: right;${corLucro} ">${lucro.toLocaleString("pt-BR", pformat)}</td>
+						<td style="text-align: right;">${cop.toLocaleString("pt-BR", format)}</td>
+						<td style="text-align: right;">${plucro.toLocaleString("pt-BR", pformat)}</td>
+						<td style="text-align: right;${corDesvio}">-</td>
+						<td style="text-align: right;${corNegativo} ">${vlrf.toLocaleString("pt-BR", format)}</td>
+					</tr>
+					<tr onclick="exibePromocoes(${dadosTb[i][0]}, ${codprod}, ${linha},'promo')" id="e${linha}" data-estado="oculto" style="display:none;background-color: #999999; color: #ffffff;"><td>Promocoes</td></tr>
+					<tr onclick="exibeOpenBox(${dadosTb[i][0]}, ${codprod}, ${linha},'opbox')" id="d${linha}" data-estado="oculto" style="display:none;background-color: #999999; color: #ffffff;"><td>Open Box</td></tr>`;
+		linha++;
 	}
 
 
@@ -320,18 +290,17 @@ function exibeN5(codprod){
 						<thead style="position: sticky; top: 0;">
 							<tr class="bg-dark text-white">
 								<th>DESCRIÇAO</th>
-								<th>QTD</th>
-								<th>P.V.F</th>
-								<th>P.V.A</th>
-								<th>V.F</th>
-								<th>C.M.V</th>
-								<th>C.O.P</th>
-								<th>L.R</th>
-								<th>L.P</th>
-								<th>DESVIO</th>
+								<th>Qtd</th>
+								<th>Preco</th>
+								<th>Custo</th>
+								<th>% Lucro</th>
+								<th>Sell Out</th>
+								<th>L. Sell Out</th>
+								<th>L. Meta</th>
+								<th>L. Financ</th>
 							</tr>
 						</thead>
-						<tbody>
+						<tbody id="tabelaN5">
 							${tabela}
 						</tbody>
 					</table>
@@ -343,11 +312,269 @@ function exibeN5(codprod){
 
 }
 
+function exibePromoOpen(id){
+	let promocoes = $("#e"+id);
+	let openbox = $("#d"+id);
+	if($(promocoes).css('display') == 'none' ){
+		$(promocoes).show("slide");
+		$(openbox).show("slide");
+	}else{
+		$(promocoes).hide("slide");
+		$(openbox).hide("slide")
+	}
+}
+
+
+function exibePromocoes(codemp, codprod, id,prefixo){
+	
+	const linhaPrincipal = document.getElementById(`d${id}`);
+	const tabelaPromocoes = document.getElementById(`promo${id}`);
+
+	if (linhaPrincipal.getAttribute("data-estado") === "oculto") {
+		linhaPrincipal.setAttribute("data-estado", "visivel");
+	
+
+let sql =  `    SELECT
+				e.CODEMP,
+				CONCAT(e.CODEMP, ' - ', e.NOMEFANTASIA) AS DESCRICAO,
+				i.QTDNEG AS QTD,
+				(i.VLRTOT) AS PRECOFUTURO,
+				(i.PRECOBASE * i.QTDNEG) AS PRECOAVISTA,
+				(i.VLRPROMO) AS VLRPROMO,
+				(i.VLRICMS) AS VLRICMS,
+				(CASE
+					WHEN i.VLRUNIT = i.PRECOBASE THEN 0
+					ELSE i.VLRTOT - (i.PRECOBASE * i.QTDNEG)
+				END) AS VRLFINANCEIRO,
+				CASE
+					WHEN i.VLRUNIT < i.PRECOBASE THEN i.VLRTOT
+					ELSE i.PRECOBASE * i.QTDNEG
+				END AS VLRPRODUTO,
+				CASE
+					WHEN i.VLRUNIT < i.PRECOBASE THEN i.VLRTOT * ISNULL((fator.PISCOFINS + fator.COMISSAO + fator.ICMS + fator.IRCSLL + fator.MONTAGEM + fator.ENTREGA + fator.CUSTOFIXO + fator.OVERHEAD) / 100, 0)
+					ELSE (i.PRECOBASE * i.QTDNEG) * ISNULL((fator.PISCOFINS + fator.COMISSAO + fator.ICMS + fator.IRCSLL + fator.MONTAGEM + fator.ENTREGA + fator.CUSTOFIXO + fator.OVERHEAD) / 100, 0)
+				END AS VLRCUSTO_OP,
+				proj.LUCRO AS LUCROPROJ,
+				(i.CUSTO * i.QTDNEG) AS CMV,
+				2 AS ORDEM
+				FROM TGFCAB c
+				INNER JOIN TGFITE i ON (i.NUNOTA = c.NUNOTA)
+				INNER JOIN TGFPRO p ON (p.CODPROD = i.CODPROD)
+				INNER JOIN TGFVEN v ON (v.CODVEND = i.CODVEND)
+				INNER JOIN TSIEMP e ON (e.CODEMP = c.CODEMP)
+				INNER JOIN TGFGRU g1 ON (g1.CODGRUPOPROD = p.CODGRUPOPROD)
+				INNER JOIN TGFGRU g2 ON (g2.CODGRUPOPROD = g1.CODGRUPAI)
+				INNER JOIN TGFGRU g3 ON (g3.CODGRUPOPROD = g2.CODGRUPAI)
+				LEFT JOIN TGFDIN pis ON (pis.NUNOTA = i.NUNOTA AND pis.SEQUENCIA = i.SEQUENCIA AND pis.CODIMP = 6)
+				LEFT JOIN TGFDIN cofins ON (cofins.NUNOTA = i.NUNOTA AND cofins.SEQUENCIA = i.SEQUENCIA AND cofins.CODIMP = 7)
+				LEFT JOIN AD_MARKUPREALIZADO fator ON (fator.CODGRUPOPROD = g3.CODGRUPOPROD AND fator.MES = MONTH(DATEADD(MONTH, -1, c.DTNEG)) AND fator.ANO = YEAR(DATEADD(MONTH, -1, c.DTNEG)))
+				LEFT JOIN AD_MARKUP proj ON (proj.CODGRUPOPROD3 = g3.CODGRUPOPROD)
+				WHERE c.CODTIPOPER = 1209
+				AND c.STATUSNOTA = 'L'
+				AND i.USOPROD = 'R'
+				AND i.CODPROD = ${codprod}
+				AND e.CODEMP = ${codemp}
+				AND i.NUPROMOCAO IS NOT NULL`;
+
+	let dadosTb = getDadosSql(sql)
+	console.log(dadosTb)
+	let html            = '';
+	let descricao 		= ''
+	let tabela          = '';
+	let corNegativo     = '';
+	let corLucro        = '';
+	let corDesvio       = '';
+	let format          = { minimumFractionDigits: 2 , style: 'currency', useGrouping: 'true', currency: 'BRL' };
+	let pformat         = { minimumFractionDigits: 2 , style: 'percent', useGrouping: 'true', currency: 'BRL' };
+	for(let i = 0; i < dadosTb.length; i++){
+		let pvf       = parseFloat(dadosTb[i][3]);
+		let pva       = parseFloat(dadosTb[i][4]);
+		let vlrf      = parseFloat(dadosTb[i][7]);
+		let cmv       = parseFloat(dadosTb[i][11]);
+		let cop       = parseFloat(dadosTb[i][9]);
+		let lucro     = (parseFloat(dadosTb[i][8]) - (parseFloat(dadosTb[i][9]) + parseFloat(dadosTb[i][11]))) / parseFloat(dadosTb[i][8]);
+		let plucro    = parseFloat(dadosTb[i][10]) / 100 ;
+		let desvio    = lucro - plucro;
+		descricao = dadosTb[i][1];
+
+		if(vlrf < 0 ){
+			corNegativo = 'color : red;';
+		}else{
+			corNegativo = '';
+		}
+
+		if(lucro < 0 ){
+			corLucro = 'color : red;';
+		}else{
+			corLucro = '';
+		}
+
+		if(desvio < 0 ){
+			corDesvio = 'color : red;';
+		}else{
+			corDesvio = 'color : green;';
+		}
+
+	tabela += `
+	<tr id="promo${id+i}" style="background-color: #e6e6e6; color: #000000;">
+		<td>${descricao}</td>
+		<td style="text-align: right;">${dadosTb[i][2]} </td>
+		<td style="text-align: right;">${pvf.toLocaleString("pt-BR", format)}</td>
+		<td style="text-align: right;">${cmv.toLocaleString("pt-BR", format)}</td>
+		<td style="text-align: right;${corLucro} ">${lucro.toLocaleString("pt-BR", pformat)}</td>
+		<td style="text-align: right;">${cop.toLocaleString("pt-BR", format)}</td>
+		<td style="text-align: right;">${plucro.toLocaleString("pt-BR", pformat)}</td>
+		<td style="text-align: right;${corDesvio}">-</td>
+		<td style="text-align: right;${corNegativo} ">${vlrf.toLocaleString("pt-BR", format)}</td>
+	</tr>
+	`
+
+
+}
+
+console.log(tabela)
+
+    const linhaExistente = document.getElementById(`e${id}`);
+    linhaExistente.insertAdjacentHTML("afterend", tabela);
+} else {
+	var elementos = document.querySelectorAll('[id^="' + prefixo + '"]');
+            for (var i = 0; i < elementos.length; i++) {
+                elementos[i].remove();
+            }
+	linhaPrincipal.setAttribute("data-estado", "oculto");
+}
+}
+
+function exibeOpenBox(codemp, codprod, id, prefixo){
+
+
+		const linhaPrincipal = document.getElementById(`P${id}`);
+		const tabelaPromocoes = document.getElementById(`e${id}`);
+	
+		if (linhaPrincipal.getAttribute("data-estado") === "oculto") {
+			tabelaPromocoes.style.display = "table-row";
+			linhaPrincipal.setAttribute("data-estado", "visivel");
+		
+	console.log(id)
+let sql = `	SELECT
+			e.CODEMP,
+			CONCAT(e.CODEMP, ' - ', e.NOMEFANTASIA) AS DESCRICAO,
+			i.QTDNEG AS QTD,
+			(i.VLRTOT) AS PRECOFUTURO,
+			(i.PRECOBASE * i.QTDNEG) AS PRECOAVISTA,
+			(i.VLRPROMO) AS VLRPROMO,
+			(i.VLRICMS) AS VLRICMS,
+			(CASE
+				WHEN i.VLRUNIT = i.PRECOBASE THEN 0
+				ELSE i.VLRTOT - (i.PRECOBASE * i.QTDNEG)
+			END) AS VRLFINANCEIRO,
+			CASE
+				WHEN i.VLRUNIT < i.PRECOBASE THEN i.VLRTOT
+				ELSE i.PRECOBASE * i.QTDNEG
+			END AS VLRPRODUTO,
+			CASE
+				WHEN i.VLRUNIT < i.PRECOBASE THEN i.VLRTOT * ISNULL((fator.PISCOFINS + fator.COMISSAO + fator.ICMS + fator.IRCSLL + fator.MONTAGEM + fator.ENTREGA + fator.CUSTOFIXO + fator.OVERHEAD) / 100, 0)
+				ELSE (i.PRECOBASE * i.QTDNEG) * ISNULL((fator.PISCOFINS + fator.COMISSAO + fator.ICMS + fator.IRCSLL + fator.MONTAGEM + fator.ENTREGA + fator.CUSTOFIXO + fator.OVERHEAD) / 100, 0)
+			END AS VLRCUSTO_OP,
+			proj.LUCRO AS LUCROPROJ,
+			(i.CUSTO * i.QTDNEG) AS CMV,
+			2 AS ORDEM
+			FROM TGFCAB c
+			INNER JOIN TGFITE i ON (i.NUNOTA = c.NUNOTA)
+			INNER JOIN TGFPRO p ON (p.CODPROD = i.CODPROD)
+			INNER JOIN TGFVEN v ON (v.CODVEND = i.CODVEND)
+			INNER JOIN TSIEMP e ON (e.CODEMP = c.CODEMP)
+			INNER JOIN TGFGRU g1 ON (g1.CODGRUPOPROD = p.CODGRUPOPROD)
+			INNER JOIN TGFGRU g2 ON (g2.CODGRUPOPROD = g1.CODGRUPAI)
+			INNER JOIN TGFGRU g3 ON (g3.CODGRUPOPROD = g2.CODGRUPAI)
+			LEFT JOIN TGFDIN pis ON (pis.NUNOTA = i.NUNOTA AND pis.SEQUENCIA = i.SEQUENCIA AND pis.CODIMP = 6)
+			LEFT JOIN TGFDIN cofins ON (cofins.NUNOTA = i.NUNOTA AND cofins.SEQUENCIA = i.SEQUENCIA AND cofins.CODIMP = 7)
+			LEFT JOIN AD_MARKUPREALIZADO fator ON (fator.CODGRUPOPROD = g3.CODGRUPOPROD AND fator.MES = MONTH(DATEADD(MONTH, -1, c.DTNEG)) AND fator.ANO = YEAR(DATEADD(MONTH, -1, c.DTNEG)))
+			LEFT JOIN AD_MARKUP proj ON (proj.CODGRUPOPROD3 = g3.CODGRUPOPROD)
+			WHERE c.CODTIPOPER = 1209
+			AND c.STATUSNOTA = 'L'
+			AND i.USOPROD = 'R'
+			AND i.CODPROD = ${codprod}
+			AND e.CODEMP = ${codemp}
+			AND i.AD_CHAVE_OPENBOX IS NOT NULL`;
+
+			let dadosTb = getDadosSql(sql)
+			console.log(dadosTb)
+			let html            = '';
+			let tabela          = '';
+			let corNegativo     = '';
+			let corLucro        = '';
+			let corDesvio       = '';
+			let descricao 		= ''
+			let format          = { minimumFractionDigits: 2 , style: 'currency', useGrouping: 'true', currency: 'BRL' };
+			let pformat         = { minimumFractionDigits: 2 , style: 'percent', useGrouping: 'true', currency: 'BRL' };
+			for(let i = 0; i < dadosTb.length; i++){
+		
+				let pvf       = parseFloat(dadosTb[i][3]);
+				let pva       = parseFloat(dadosTb[i][4]);
+				let vlrf      = parseFloat(dadosTb[i][7]);
+				let cmv       = parseFloat(dadosTb[i][11]);
+				let cop       = parseFloat(dadosTb[i][9]);
+				let lucro     = (parseFloat(dadosTb[i][8]) - (parseFloat(dadosTb[i][9]) + parseFloat(dadosTb[i][11]))) / parseFloat(dadosTb[i][8]);
+				let plucro    = parseFloat(dadosTb[i][10]) / 100 ;
+				let desvio    = lucro - plucro;
+
+				descricao = dadosTb[i][1];
+
+				if(vlrf < 0 ){
+					corNegativo = 'color : red;';
+				}else{
+					corNegativo = '';
+				}
+		
+				if(lucro < 0 ){
+					corLucro = 'color : red;';
+				}else{
+					corLucro = '';
+				}
+		
+				if(desvio < 0 ){
+					corDesvio = 'color : red;';
+				}else{
+					corDesvio = 'color : green;';
+				}
+		
+		
+			tabela += `
+			<tr id="opbox${id+i}" style="background-color: #e6e6e6; color: #000000;">
+				<td>${descricao}</td>
+				<td style="text-align: right;">${dadosTb[i][2]} </td>
+				<td style="text-align: right;">${pvf.toLocaleString("pt-BR", format)}</td>
+				<td style="text-align: right;">${cmv.toLocaleString("pt-BR", format)}</td>
+				<td style="text-align: right;${corLucro} ">${lucro.toLocaleString("pt-BR", pformat)}</td>
+				<td style="text-align: right;">${cop.toLocaleString("pt-BR", format)}</td>
+				<td style="text-align: right;">${plucro.toLocaleString("pt-BR", pformat)}</td>
+				<td style="text-align: right;${corDesvio}">-</td>
+				<td style="text-align: right;${corNegativo} ">${vlrf.toLocaleString("pt-BR", format)}</td>
+			</tr>
+			`
+		
+		
+		}
+
+		
+		console.log(tabela)
+			const linhaExistente = document.getElementById(`d${id}`);
+			linhaExistente.insertAdjacentHTML("afterend", tabela); 
+		} else {
+			var elementos = document.querySelectorAll('[id^="' + prefixo + '"]');
+            for (var i = 0; i < elementos.length; i++) {
+                elementos[i].remove();
+            }
+			linhaPrincipal.setAttribute("data-estado", "oculto");
+		}
+	}
+
+
 
 function getDayFilters() {
 	debugger;
 }
-
 
 function buscaDados(dataini,datafin){
 
@@ -566,6 +793,7 @@ function criaTabela(dadosTb){
 	let format        	= { minimumFractionDigits: 2 , style: 'currency', useGrouping: 'true', currency: 'BRL' };
 	let pformat       	= { minimumFractionDigits: 2 , style: 'percent', useGrouping: 'true', currency: 'BRL' };
 	let dformat       	= { minimumFractionDigits: 0 , style: 'decimal', useGrouping: 'true', currency: 'BRL' };
+	let tlucro			= 0;
 
 	for(let i = 0; i < dadosTb.length; i++){
 
@@ -578,7 +806,7 @@ function criaTabela(dadosTb){
 		let qtd       = dadosTb[i][3];
 		let pvf       = parseFloat(dadosTb[i][4]);
 		let pva       = parseFloat(dadosTb[i][5]);
-		let vlrf      = parseFloat(dadosTb[i][8]);
+		let vlrf      = parseFloat(dadosTb[i][7]);
 		let cmv       = parseFloat(dadosTb[i][12]);
 		let cop       = parseFloat(dadosTb[i][10]);
 		let lucro     = (parseFloat(dadosTb[i][9]) - (parseFloat(dadosTb[i][10]) + parseFloat(dadosTb[i][12]))) / parseFloat(dadosTb[i][9]);
@@ -601,13 +829,13 @@ function criaTabela(dadosTb){
 		}
 
 		if(grau == 3){
-			cor     = 'background-color: #999999; color: #ffffff; ';
-			exibe   = 'display: none;';
-			icone   = '<i class="bi bi-arrow-return-right"></i>';
-			name    = dadosTb[i][0].toString().substring(0,3);
-			nameBt  = dadosTb[i][0].toString().substring(0,5);
-			classTable = 'class="mostraFilhas"'
-			action  = `onclick="exibeRegistros(${nameBt});"`;
+			cor     	= 'background-color: #999999; color: #ffffff; ';
+			exibe   	= 'display: none;';
+			icone   	= '<i class="bi bi-arrow-return-right"></i>';
+			name    	= dadosTb[i][0].toString().substring(0,3);
+			nameBt  	= dadosTb[i][0].toString().substring(0,5);
+			classTable 	= 'class="mostraFilhas"'
+			action  	= `onclick="exibeRegistros(${nameBt});"`;
 		}
 
 		if(grau == 4){
@@ -657,18 +885,17 @@ function criaTabela(dadosTb){
 
 		tabela +=  `<tr grau="${dadosTb[i][1]}" id="L${linha}" name="${name}" style="${exibe} ${cor} font-weight: bold;">
                         <td ${action} ${classTable}>${descricao}</td>
-                        <td style="text-align:right; text-shadow: 0; ">${qtd.toLocaleString("pt-BR", dformat)}</td>
-                        <td style="text-align:right;  text-shadow: 0; ">${pvf.toLocaleString("pt-BR", format)}</td>
-                        <td style="text-align:right;  text-shadow: 0; ">${pva.toLocaleString("pt-BR", format)}</td>
-                        <td style="text-align:right;  text-shadow: 0;" ${corNegativo}>${iconVlrNegativo} ${vlrf.toLocaleString("pt-BR", format)}</td>
-                        <td style="text-align:right;  ">${cmv.toLocaleString("pt-BR", format)}</td>
-                        <td style="text-align:right;  ">${cop.toLocaleString("pt-BR", format)}</td>
-                        <th style="text-align:right;  text-shadow: 0;" ${corLucro}>${iconLucro} ${lucro.toLocaleString("pt-BR", pformat)}</th>
-                        <th style="text-align:right;  ">${plucro.toLocaleString("pt-BR", pformat)}</th>
-                        <th style="text-align:right;  text-shadow: 0;" ${corDesvio}>${iconDesvio} ${desvio.toLocaleString("pt-BR", pformat)}</th>
-						<td style="text-align:right; text-shadow:0;">${calculoRentabilidade(cmv,pvf).toLocaleString("pt-BR",pformat)}</td>
-                    </tr>
-								`;
+                        <td style="text-align:right;text-shadow: 0; ">${qtd.toLocaleString("pt-BR", dformat)}</td>
+                        <td style="text-align:right;text-shadow: 0; ">${pva.toLocaleString("pt-BR", format)}</td>
+                        <td style="text-align:right;">${cmv.toLocaleString("pt-BR", format)}</td>
+                        <th style="text-align:right;" ${corLucro}> ${iconLucro} ${lucro.toLocaleString("pt-BR", pformat)}</td>
+                        <th style="text-align:right;text-shadow: 0;"> ${cop.toLocaleString("pt-BR", format)}</th>
+						<th style="text-align:right;">${cop.toLocaleString("pt-BR", format)}</td>
+                        <th style="text-align:right;">-</th>
+                        <th style="text-align:right;text-shadow: 0;" ${corDesvio}>${vlrf.toLocaleString("pt-BR", format)}</th>
+					</tr>`;
+						// <td style="text-align:right; text-shadow:0;">${calculoRentabilidade(cmv,pvf).toLocaleString("pt-BR",pformat)}</td>
+                    // <td style="text-align:right;text-shadow: 0;" ${corNegativo}>${iconVlrNegativo} ${cmv.toLocaleString("pt-BR", format)}</td>
 		linha++;
 		if(dadosTb[i][1] == 2) {
 			tqtd += parseFloat(dadosTb[i][3]);
@@ -677,6 +904,7 @@ function criaTabela(dadosTb){
 			tvlrf += vlrf;
 			tcmv += cmv;
 			tcop += cop;
+			tlucro += lucro
 		}
 	}
 
@@ -689,17 +917,15 @@ function criaTabela(dadosTb){
 
 	total = `
 					<tr class="table-info">
-						<th style="text-align: left; ">TOTAL</th>
+						<th style="text-align: left;">TOTAL</th>
 						<th style="text-align:right;">${tqtd.toLocaleString("pt-BR", dformat)}</th>
-						<th style="text-align:right;">${tpvf.toLocaleString("pt-BR", format)}</th>
 						<th style="text-align:right;">${tpva.toLocaleString("pt-BR", format)}</th>
-						<th style="text-align:right;" ${corNegativo}>${tvlrf.toLocaleString("pt-BR", format)}</th>
-						<th style="text-align:right;">${tcmv.toLocaleString("pt-BR", format)}</th>
+						<th style="text-align:right;" ${corNegativo}>${tcmv.toLocaleString("pt-BR", format)}</th>
+						<th style="text-align:right;">${tlucro.toLocaleString("pt-BR", format)}</th>
 						<th style="text-align:right;">${tcop.toLocaleString("pt-BR", format)}</th>
 						<th style="text-align:right;">0</th>
 						<th style="text-align:right;">0</th>
 						<th style="text-align:right;">0</th>
-						<th style="text-align:right;">${calculoRentabilidade(tcmv, tpvf).toLocaleString("pt-BR",format)}</th>
 					</tr>
 					`;
 
@@ -713,17 +939,15 @@ function criaTabela(dadosTb){
 							<table class="table table-hover mb-0" style="font-size:12px">
 								<thead style="position: sticky; top: 0;">
 									<tr>
-										<th style="text-align:left" scope="col">DESCRICAO</th>
-										<th style="text-align:right" scope="col">QTD</th>
-										<th style="text-align:right" scope="col">P.V.F</th>
-										<th style="text-align:right" scope="col">P.V.A</th>
-										<th style="text-align:right" scope="col">V.F</th>
-										<th style="text-align:right" scope="col">C.M.V</th>
-										<th style="text-align:right" scope="col">C.O.P</th>
-										<th style="text-align:right" scope="col">L.R</th>
-										<th style="text-align:right" scope="col">L.P</th>
-										<th style="text-align:right" scope="col">DESVIO</th>
-										<th style="text-align:right" scope="col">C.R</th>
+										<th style="text-align:left" scope="col">DESCRIÇAO</th>
+										<th style="text-align:right" scope="col">Qtd</th>
+										<th style="text-align:right" scope="col">Preco</th>
+										<th style="text-align:right" scope="col">Custo</th>
+										<th style="text-align:right" scope="col">% Lucro</th>
+										<th style="text-align:right" scope="col">Sell Out</th>
+										<th style="text-align:right" scope="col">L. Sell Out</th>
+										<th style="text-align:right" scope="col">L. Meta</th>
+										<th style="text-align:right" scope="col">L. Financ</th>
 									</tr>
 									${total}
 								</thead>
@@ -748,14 +972,15 @@ function calculoRentabilidade(custo,venda){
 	let ter = seg + 0.1105
 	let qua = 1 - ter
 	let qui = qua * 100;
-	console.log(pri)
-	console.log(seg)
-	console.log(ter)
-	console.log(qua)
-	console.log(qui)
+	// console.log(pri)
+	// console.log(seg)
+	// console.log(ter)
+	// console.log(qua)
+	// console.log(qui)
 
 	return (((custo * 0.8895 / venda) + 0.1105) -1 ) * 100
 }
+
 
 function exibeRegistros(name){
 		let objetos = $("tr[name="+name+"]");

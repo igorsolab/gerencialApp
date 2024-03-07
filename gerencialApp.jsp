@@ -57,18 +57,19 @@
 
 
 	<!-- Script de API Teste(PC Pessoal) -->
-	<script language="JavaScript">
-		document.write('<scr' + 'ipt src="http://172.16.63.140/gerencialApp/gerencialApp.js?versao=' + Math.random() + '?"><\/scr' + 'ipt>');
-		document.write('<scr' + 'ipt src="http://172.16.63.140/gerencialApp/sankhya.js?versao=' + Math.random() + '?"><\/scr' + 'ipt>');
-		document.write('<scr' + 'ipt src="http://172.16.63.140/gerencialApp/criaGraficos.js?versao=' + Math.random() + '?"><\/scr' + 'ipt>');
-	</script>
+	<!-- <script language="JavaScript">
+		document.write('<scr' + 'ipt src="http://192.168.3.16/gerencialApp/gerencialApp.js?versao=' + Math.random() + '?"><\/scr' + 'ipt>');
+		document.write('<scr' + 'ipt src="http://192.168.3.16/gerencialApp/sankhya.js?versao=' + Math.random() + '?"><\/scr' + 'ipt>');
+		document.write('<scr' + 'ipt src="http://192.168.3.16/gerencialApp/criaGraficos.js?versao=' + Math.random() + '?"><\/scr' + 'ipt>');
+	</script> -->
 
 	<!-- Script de API Teste(Servidor)-->
-	<!-- <script language="JavaScript">
+	<script language="JavaScript">
 					hostname = location.hostname;
 					document.write('<scr' + 'ipt src="http://'+hostname+'/sankhya/gerencialApp/gerencialApp.js?versao=' + Math.random() + '?"><\/scr' + 'ipt>');
 					document.write('<scr' + 'ipt src="http://'+hostname+'/sankhya/gerencialApp/sankhya.js?versao=' + Math.random() + '?"><\/scr' + 'ipt>');
-	</script>  -->
+					document.write('<scr' + 'ipt src="http://'+hostname+'/sankhya/gerencialApp/criaGraficos.js?versao=' + Math.random() + '?"><\/scr' + 'ipt>');
+	</script> 
 
 	<snk:load />
 
